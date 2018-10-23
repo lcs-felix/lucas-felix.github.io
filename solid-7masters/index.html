@@ -1,0 +1,293 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+		<link rel="stylesheet" href="css/gaveta.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>Lucas Félix</h3>
+					<p>Instrutor e Desenvolvedor na Caelum</p>
+				</section>
+				<section>
+					<h3>Um pouco de SOLID e outras coisas</h3>
+					<p>PS: Vai ser código Java mas espero que dê pra tirar 
+						proveito pra outras linguagens :)</p>
+				</section>
+				<section>
+					<h3>Single Responsibility Principle</h3>
+					<ul>
+						<li class="fragment fade-in">Talvez uma escolha de nome errada</li>
+						<li class="fragment fade-in">Funçoes devem fazer uma única coisa</li>
+						<blockquote class="fragment fade-in">
+							A module should be responsible to one, and only one, actor.
+							-- Uncle Bob
+						</blockquote>
+					</ul>
+				</section>
+				<section>
+					<pre><code class="java" data-trim contenteditable>
+						public class Turma {
+
+							// atributos
+
+							public void enviaBoletos() {
+								// envia email de pagamento pra lista de alunos
+							}
+
+							public void salva() {
+								// salva no banco
+							}
+						}		
+					</code></pre>					
+				</section>
+				<section>
+					<h2>Coesão</h2>
+				</section>
+				<section>
+					<h2>Acoplamento</h2>
+				</section>
+				<section>
+					<h3>Alta coesão e baixo acoplamento &trade;</h3>
+				</section>
+				<section>
+					<h2>OO como ferramenta para gerenciar dependências</h2>
+				</section>
+				<section>
+					<h2>Imports como forma de identificar problemas nas dependências</h2>
+					<a href="https://alexandreaquiles.com.br/2013/01/13/ouca-seus-imports/">
+						Ouça seus imports, Alexandre Aquiles
+					</a>
+				</section>
+				<section>
+					<pre><code class="java" data-trim contenteditable style="max-height: initial; width: 100%;">
+							import br.com.caelum.solid.domain.Compra;
+							import br.com.caelum.solid.domain.NotaFiscal;
+							import br.com.caelum.solid.domain.Produto;
+							
+							import br.com.caelum.solid.repository.CompraRepository;
+							import br.com.caelum.solid.repository.EstoqueRepository;
+							import br.com.caelum.solid.repository.NotaFiscalRepository;
+							
+							import org.springframework.mail.SimpleMailMessage;
+							import org.springframework.mail.javamail.JavaMailSender;
+							
+							import org.springframework.stereotype.Controller;
+							import org.springframework.web.bind.annotation.GetMapping;
+							import org.springframework.web.bind.annotation.PathVariable;
+							import org.springframework.web.bind.annotation.RequestMapping;
+					</code></pre>
+				</section>
+				<section>
+					<h2>Acomplamento vai existir. Pode ser bom ou ruim</h2>
+				</section>
+				<section>Classes estáveis e abstrações</section>
+				<section>
+					<img src="img/md-cotuba-pdf_epub.png">
+					<pre><code class="bash">./cotuba.sh -d ~/cotuba/exemplo -f pdf</code></pre>
+
+					<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+						http://blog.caelum.com.br/plugins-em-java-com-service-providers/
+					</a>
+				</section>
+				<section>
+					<img src="img/cotuba-chamando-tema_paradizo.png">
+					<p>Um pouco da inversão de dependências</p>
+
+					<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+						http://blog.caelum.com.br/plugins-em-java-com-service-providers/
+					</a>
+				</section>
+				<section>
+					<h3>Depender de abstrações</h3>
+					<pre><code class="java" data-trim contenteditable>
+						public interface LogoAposRenderizarMDParaHTML {
+							void trata(Capitulo capitulo);
+						}
+					</pre></code>
+
+					<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+						http://blog.caelum.com.br/plugins-em-java-com-service-providers/
+					</a>
+				</section>
+				<section>
+					<a href="https://en.wikipedia.org/wiki/Service_provider_interface">
+						SPI (Service Provider Interface)
+					</a>
+				</section>
+				<section>
+					<pre><code class="java" data-trim contenteditable>
+						public class TemaParadizo implements LogoAposRenderizarMDParaHTML {
+
+							public void trata(Capitulo capitulo) {
+								// adiciona css no html do capítulo
+							}
+							
+						}
+					</pre></code>
+
+					<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+						http://blog.caelum.com.br/plugins-em-java-com-service-providers/
+					</a>
+				</section>
+				<section>
+					<img src="img/estrutura-service-provider.png">
+					<pre><code>br.com.paradizo.tema.TemaParadizo</code></pre>
+				</section>
+				<section>
+					<h3>Service Provider</h3>
+				</section>
+				<section>
+					<pre><code class="java" data-trim contenteditable>
+public interface AoRenderizarHtml {
+
+	String renderizou(Capitulo capitulo);
+
+	public static void aposRenderizacao(Capitulo capitulo) {
+
+		ServiceLoader&lt;AoRenderizarHtml&gt; LOADER = ServiceLoader.load(AoRenderizarHtml.class);
+
+		for (AoRenderizarHtml aoRenderizarHtml : LOADER) {
+			aoRenderizarHtml.renderizou(capitulo);
+		}
+	}
+}
+					</pre></code>
+
+					<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+						http://blog.caelum.com.br/plugins-em-java-com-service-providers/
+					</a>
+				</section>
+				<section>
+					<pre><code class="java" data-trim contenteditable>
+public class RenderizadorDeMD {
+
+	public List&lt;Capitulo&gt; renderizaParaHTML(Path diretorioDosMD) {
+		List&lt;Capitulo&gt; capitulos = new ArrayList&lt;&gt;();
+
+		obtemArquivosMD(diretorioDosMD)
+			.forEach(arquivoMD -> {
+				// bibliotecas pra fazer a conversão
+				LogoAposRenderizarMDParaHTML
+					.rodaPara(capitulo); //inserido
+			});
+
+		return capitulos;
+	}
+
+	// restante do código
+	}					  
+					</pre></code>	
+
+					<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+						http://blog.caelum.com.br/plugins-em-java-com-service-providers/
+					</a>
+				</section>
+				<section>
+					<img src="img/dip.jpg">
+				</section>
+				<section>
+					<h2>Algumas especificações/frameworks usam</h2>
+					<ul>
+						<li>Hibernate</li>
+						<li>Drivers do JDBC</li>
+						<li>Na API de Servlets</li>
+					</ul>
+				</section>
+				<section>
+					<blockquote>
+							1. Software entities (classes, modules, etc) should be open for
+							extension, but closed for modification.  (The open/closed
+							principle -- Bertrand Meyer)
+					</blockquote>
+
+					<p>-- Uncle Bob</p>
+
+					<a href="https://groups.google.com/forum/?hl=en#!topic/comp.object/WICPDcXAMG8">
+						bit.ly/10-mandamentos-oo
+					</a>
+				</section>
+				<section>
+					<blockquote>
+						2. Details should depend upon abstractions.  Abstractions should
+						 depend not upon details.  (Principle of Dependency Inversion)
+					</blockquote>
+
+					<p>-- Uncle Bob</p>
+
+					<a href="https://groups.google.com/forum/?hl=en#!topic/comp.object/WICPDcXAMG8">
+						bit.ly/10-mandamentos-oo
+					</a>
+				</section>
+				<section>
+					<h2>Referências</h2>
+					<ul>
+						<li>
+							<a href="https://www.amazon.com.br/Agile-Principles-Patterns-Practices-C/dp/0131857258">
+								Agile Principles, Patterns, and Practices in C# (Robert C. Martin)
+							</a>	
+						</li>
+						<li>
+							<a href="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164">
+								Clean Architecture (Robert C. Martin)
+							</a>
+						</li>
+						<li>
+							<a href="https://groups.google.com/d/msg/comp.object/WICPDcXAMG8/EbGa2Vt-7q0J">
+								The Ten Commandments of OO Programming
+							</a>
+						</li>
+						<li>
+							<a href="http://blog.caelum.com.br/plugins-em-java-com-service-providers/">
+								Plugins em Java com Service Providers
+							</a>
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Muito obrigado! :)</h2>
+				</section>
+			</div>
+			<div class="footer">
+				@lcsfelix
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
